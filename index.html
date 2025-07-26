@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seoul</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        background: #ffd1d9;
+        overflow: hidden;
+      }
+      body {
+        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background: linear-gradient(#ffd1d9, #fdb4cb);
+        position: relative;
+      }
+      #backdrop {
+        height: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        position: absolute;
+      }
+      @keyframes jiggle {
+        0% {
+          bottom: 0vh;
+        }
+        50% {
+          bottom: -0.7vh;
+        }
+        100% {
+          bottom: 0;
+        }
+      }
+      #t,
+      #p {
+        position: absolute;
+        bottom: 0;
+        width: 40vh;
+
+        animation-name: jiggle;
+        animation-duration: 3s; /* Controls the speed */
+        animation-iteration-count: infinite;
+        animation-timing-function: ease-in-out;
+      }
+      #t {
+        transform: translate(-10%, 7%);
+        left: 50%;
+      }
+      #p {
+        transform: translate(10%, 10%);
+        right: 50%;
+      }
+      #time {
+        padding: 0.3em;
+        border-radius: 0.3em;
+        position: relative;
+        color: #ffa8bd;
+        background: #ad6088;
+        font-family: monospace;
+        font-size: 4vh;
+        position: absolute;
+        bottom: 2vh;
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <img id="backdrop" src="bg.png" />
+    <img id="t" src="t.png" />
+    <img id="p" src="p.png" />
+    <div id="time"></div>
+    <script>
+      const targetDate = new Date("2025-08-09T18:30:00+09:00");
+      let remainingSeconds;
+
+      const timeUnitLengths = [
+        ["days", 24 * 60 * 60],
+        ["hours", 60 * 60],
+        ["minutes", 60],
+        ["seconds", 1],
+      ];
+
+      adjustTimer();
+      updateTimer();
+      setInterval(updateTimer, 1000);
+      setInterval(adjustTimer, 60000);
+
+      function adjustTimer() {
+        remainingSeconds = Math.max(
+          Math.round((targetDate - new Date()) / 1000),
+          0
+        );
+      }
+
+      function updateTimer() {
+        const remaining = calculateRemaining();
+
+        document.getElementById("time").innerText = `${remaining.days}d ${pad(
+          remaining.hours
+        )}h ${pad(remaining.minutes)}m ${pad(remaining.seconds)}s`;
+
+        /*for (const key in remaining) {
+          document.getElementById(key).innerText = pad(remaining[key]);
+        }*/
+      }
+
+      function pad(number) {
+        return `${number < 10 ? 0 : ""}${number}`;
+      }
+
+      function calculateRemaining() {
+        return timeUnitLengths.reduce(
+          ([results, carry], [unit, length]) => {
+            const result = Math.floor(carry / length);
+            return [{ ...results, [unit]: result }, carry - result * length];
+          },
+          [{}, --remainingSeconds]
+        )[0];
+      }
+    </script>
+  </body>
+</html>
