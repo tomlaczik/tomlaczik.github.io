@@ -31,7 +31,7 @@
           bottom: 0vh;
         }
         50% {
-          bottom: -0.7vh;
+          bottom: -2vh;
         }
         100% {
           bottom: 0;
@@ -44,7 +44,7 @@
         width: 40vh;
 
         animation-name: jiggle;
-        animation-duration: 3s; /* Controls the speed */
+        animation-duration: 1.5s; /* Controls the speed */
         animation-iteration-count: infinite;
         animation-timing-function: ease-in-out;
       }
@@ -103,9 +103,12 @@
       function updateTimer() {
         const remaining = calculateRemaining();
 
-        document.getElementById("time").innerText = `${remaining.days}d ${pad(
-          remaining.hours
-        )}h ${pad(remaining.minutes)}m ${pad(remaining.seconds)}s`;
+        document.getElementById("time").innerText =
+          remainingSeconds > 0
+            ? `${remaining.days}d ${pad(remaining.hours)}h ${pad(
+                remaining.minutes
+              )}m ${pad(remaining.seconds)}s`
+            : "We made it!";
 
         /*for (const key in remaining) {
           document.getElementById(key).innerText = pad(remaining[key]);
@@ -122,7 +125,7 @@
             const result = Math.floor(carry / length);
             return [{ ...results, [unit]: result }, carry - result * length];
           },
-          [{}, --remainingSeconds]
+          [{}, remainingSeconds > 0 ? --remainingSeconds : remainingSeconds]
         )[0];
       }
     </script>
